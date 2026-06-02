@@ -11,6 +11,18 @@ api.interceptors.request.use(cfg => {
   return cfg
 })
 
+// Token expirado/inválido → limpa e manda pro login
+api.interceptors.response.use(
+  res => res,
+  err => {
+    if (err.response?.status === 401 && typeof window !== 'undefined') {
+      localStorage.removeItem('token')
+      window.location.href = '/login'
+    }
+    return Promise.reject(err)
+  }
+)
+
 // Tipos
 export interface Lead {
   id:                 string

@@ -50,7 +50,12 @@ export default function PricingPage() {
       if (res.data.url) window.location.href = res.data.url
       else setError(res.data.error ?? 'Erro ao iniciar checkout.')
     } catch (e: any) {
-      setError(e.response?.data?.error ?? 'Stripe não configurado ainda.')
+      if (e.response?.status === 401) {
+        localStorage.removeItem('token')
+        router.push(`/login?plan=${planId}`)
+        return
+      }
+      setError(e.response?.data?.error ?? 'Erro ao conectar com o servidor. Tente novamente.')
     } finally { setLoading(null) }
   }
 
