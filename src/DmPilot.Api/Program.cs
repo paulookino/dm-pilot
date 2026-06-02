@@ -7,6 +7,7 @@ using DmPilot.Infrastructure.AI;
 using DmPilot.Infrastructure.Data;
 using DmPilot.Infrastructure.Messaging;
 using Hangfire;
+using Hangfire.InMemory;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -16,25 +17,32 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // ── Database ──────────────────────────────────────────────────
+var pg         = builder.Configuration.GetConnectionString("Postgres");
+var usePg      = !string.IsNullOrEmpty(pg);
+var sqlitePath = Path.Combine(builder.Environment.ContentRootPath, "dmpilot.db");
+
 builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseNpgsql(
-        builder.Configuration.GetConnectionString("Postgres"),
-        npg => npg.MigrationsAssembly("DmPilot.Infrastructure")));
+{
+    if (usePg) opt.UseNpgsql(pg, o => o.MigrationsAssembly("DmPilot.Infrastructure"));
+    else       opt.UseSqlite($"Data Source={sqlitePath}", o => o.MigrationsAssembly("DmPilot.Infrastructure"));
+});
 builder.Services.AddScoped<IDbContextAccessor, AppDbContextAccessor>();
 
 // ── Hangfire ──────────────────────────────────────────────────
-builder.Services.AddHangfire(config => config
-    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-    .UseSimpleAssemblyNameTypeSerializer()
-    .UseRecommendedSerializerSettings()
-    .UsePostgreSqlStorage(c => c.UseNpgsqlConnection(
-        builder.Configuration.GetConnectionString("Postgres"))));
-builder.Services.AddHangfireServer(opt => opt.WorkerCount = 5);
+builder.Services.AddHangfire(cfg =>
+{
+    cfg.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+       .UseSimpleAssemblyNameTypeSerializer()
+       .UseRecommendedSerializerSettings();
+    if (usePg) cfg.UsePostgreSqlStorage(c => c.UseNpgsqlConnection(pg));
+    else       cfg.UseInMemoryStorage();
+});
+builder.Services.AddHangfireServer(opt => opt.WorkerCount = 3);
 
 // ── HTTP Clients ──────────────────────────────────────────────
 builder.Services.AddHttpClient<IInstagramClient, InstagramClient>();
 builder.Services.AddHttpClient<IWhatsAppClient, WhatsAppClient>();
-builder.Services.AddHttpClient<IClaudeClient, ClaudeApiClient>();
+builder.Services.AddHttpClient<IClaudeClient, GroqApiClient>(); // Gratuito!
 
 // ── App Services ──────────────────────────────────────────────
 builder.Services.AddScoped<AiContextBuilder>();
@@ -58,14 +66,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddAuthorization();
 
-// ── CORS (para o dashboard Next.js) ──────────────────────────
+// ── CORS ──────────────────────────────────────────────────────
 builder.Services.AddCors(opt => opt.AddPolicy("Dashboard", policy =>
-    policy.WithOrigins(builder.Configuration["AllowedOrigins"] ?? "http://localhost:3000")
-          .AllowAnyHeader().AllowAnyMethod()));
+    policy.SetIsOriginAllowed(_ => true)   // aceitar qualquer origem (dev e prod via config)
+          .AllowAnyHeader()
+          .AllowAnyMethod()));
 
 var app = builder.Build();
 
-// ── Middleware ────────────────────────────────────────────────
+// ── CORS manual (garante funcionamento com Minimal APIs) ─────
+app.Use(async (ctx, next) =>
+{
+    ctx.Response.Headers["Access-Control-Allow-Origin"]  = ctx.Request.Headers["Origin"].FirstOrDefault() ?? "*";
+    ctx.Response.Headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,PATCH,DELETE,OPTIONS";
+    ctx.Response.Headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization,X-Requested-With";
+    ctx.Response.Headers["Access-Control-Max-Age"]       = "86400";
+    if (ctx.Request.Method == "OPTIONS") { ctx.Response.StatusCode = 204; return; }
+    await next();
+});
+
 app.UseCors("Dashboard");
 app.UseAuthentication();
 app.UseAuthorization();

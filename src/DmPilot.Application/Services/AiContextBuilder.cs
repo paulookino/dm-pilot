@@ -42,13 +42,13 @@ public class AiContextBuilder
 
         [INSTRUÇÃO]
         Responda APENAS a última mensagem do lead.
-        Retorne OBRIGATORIAMENTE um JSON com esta estrutura exata:
-        {{
-          "response": "sua resposta aqui",
-          "intent": "Greeting|Interested|PriceAsked|Objection|ReadyToBuy|NotInterested|OffTopic",
-          "qualification_score_delta": 5,
-          "inject_payment_link": false
-        }}
+        Retorne OBRIGATORIAMENTE um JSON com esta estrutura (sem formatacao extra):
+        INICIO_JSON
+        response: sua resposta aqui
+        intent: Greeting ou Interested ou PriceAsked ou Objection ou ReadyToBuy ou NotInterested ou OffTopic
+        qualification_score_delta: numero entre -10 e 20
+        inject_payment_link: true ou false
+        FIM_JSON
         """;
     }
 }

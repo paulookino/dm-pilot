@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { leadsApi, type Lead } from '@/lib/api'
-import { Flame, Instagram, MessageCircle, Search } from 'lucide-react'
+import { Flame, Camera, MessageCircle, Search } from 'lucide-react'
 
 const STATUS_COLORS: Record<string, string> = {
   New: '#6366f1', Contacted: '#8b5cf6', Qualified: '#a78bfa',
@@ -70,7 +70,7 @@ export default function LeadsPage() {
                 </td>
                 <td className="px-5 py-3">
                   {lead.channel === 'Instagram'
-                    ? <Instagram className="w-4 h-4" style={{ color: '#e1306c' }} />
+                    ? <Camera className="w-4 h-4" style={{ color: '#e1306c' }} />
                     : <MessageCircle className="w-4 h-4" style={{ color: '#25d366' }} />}
                 </td>
                 <td className="px-5 py-3">

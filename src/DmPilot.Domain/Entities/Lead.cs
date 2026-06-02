@@ -1,5 +1,4 @@
 using DmPilot.Domain.Enums;
-using System.Text.Json;
 
 namespace DmPilot.Domain.Entities;
 
@@ -23,8 +22,8 @@ public class Lead
     public LeadStatus  Status            { get; set; } = LeadStatus.New;
     public int         QualificationScore{ get; set; } = 0;  // 0-100
 
-    // Dados extraídos pela IA (flexível via JSONB)
-    public JsonDocument? Metadata        { get; set; }
+    // Dados extraídos pela IA — JSON serializado como string (compatível SQLite e Postgres)
+    public string?       MetadataJson    { get; set; }
 
     // Campanha atual
     public Guid?       AssignedCampaignId{ get; set; }

@@ -25,7 +25,7 @@ public class LeadConfiguration : IEntityTypeConfiguration<Lead>
     {
         b.HasKey(l => l.Id);
         b.HasIndex(l => new { l.TenantId, l.ExternalId, l.Channel }).IsUnique();
-        b.Property(l => l.Metadata).HasColumnType("jsonb");
+        b.Property(l => l.MetadataJson).HasMaxLength(4000);
         b.HasMany(l => l.Conversations).WithOne(c => c.Lead).HasForeignKey(c => c.LeadId);
     }
 }
