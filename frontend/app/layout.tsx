@@ -5,8 +5,15 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'DM Pilot — Automação de Vendas',
-  description: 'Transforme DMs em vendas com IA',
+  title: {
+    default:  'DM Pilot',
+    template: '%s · DM Pilot',
+  },
+  description: 'Automação de vendas via Instagram e WhatsApp com IA. Responda DMs automaticamente e converta leads em clientes.',
+  icons: {
+    icon:  [{ url: '/icon.svg',       type: 'image/svg+xml' }],
+    apple: [{ url: '/apple-icon.svg', type: 'image/svg+xml' }],
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
