@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DmPilot.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+db59c0c15d77665f955fa734c1f7ecb50f7428c6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7daa5fc03664a95bf21432ed2525a5853c867089")]
 [assembly: System.Reflection.AssemblyProductAttribute("DmPilot.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DmPilot.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

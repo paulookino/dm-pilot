@@ -102,6 +102,7 @@ app.MapAuthEndpoints();
 app.MapLeadEndpoints();
 app.MapConversationEndpoints();
 app.MapCampaignEndpoints();
+app.MapOnboardingEndpoints();
 
 // ── Hangfire Dashboard (protegido) ────────────────────────────
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
