@@ -1,0 +1,9 @@
+[build]
+dockerfilePath = "src/DmPilot.Api/Dockerfile"
+dockerContextDir = "src"
+
+[deploy]
+startCommand = "dotnet DmPilot.Api.dll"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
