@@ -15,5 +15,5 @@ RUN dotnet publish "DmPilot.Api.csproj" -c Release -o /app/publish /p:UseAppHost
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "DmPilot.Api.dll"]
