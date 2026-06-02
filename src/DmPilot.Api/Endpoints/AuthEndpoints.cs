@@ -27,7 +27,7 @@ public static class AuthEndpoints
                 Email        = req.Email,
                 Slug         = GenerateSlug(req.Name),
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password),
-                Plan         = PlanType.Starter,
+                Plan         = PlanType.Free,
             };
             db.Tenants.Add(tenant);
             await db.SaveChangesAsync();
