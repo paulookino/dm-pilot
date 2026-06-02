@@ -14,8 +14,25 @@ export default function CampaignsPage() {
     if (!editing) return
     setSaving(true)
     try {
-      if (editing.id) await campaignsApi.update(editing.id, editing)
-      else            await campaignsApi.create(editing)
+      // Garantir que todos os campos obrigatórios estão presentes
+      const payload = {
+        name:               editing.name              ?? '',
+        active:             editing.active            ?? true,
+        isDefault:          editing.isDefault         ?? false,
+        triggerKeyword:     editing.triggerKeyword    ?? null,
+        personaName:        (editing as any).personaName    ?? 'Assistente',
+        personaTone:        (editing as any).personaTone    ?? 'amigável e profissional',
+        systemPrompt:       (editing as any).systemPrompt   ?? '',
+        productName:        (editing as any).productName    ?? '',
+        productDescription: (editing as any).productDescription ?? '',
+        productBenefits:    (editing as any).productBenefits    ?? '',
+        productPrice:       (editing as any).productPrice       ?? null,
+        paymentUrl:         (editing as any).paymentUrl         ?? null,
+        objectionHandlers:  (editing as any).objectionHandlers  ?? '',
+        closingMessage:     (editing as any).closingMessage     ?? null,
+      }
+      if (editing.id) await campaignsApi.update(editing.id, payload)
+      else            await campaignsApi.create(payload)
       const r = await campaignsApi.list()
       setCampaigns(r.data)
       setEditing(null)
@@ -61,12 +78,15 @@ export default function CampaignsPage() {
             <h2 className="text-lg font-bold text-white">{editing.id ? 'Editar' : 'Nova'} Campanha</h2>
 
             <div className="grid grid-cols-2 gap-4">
-              <F label="Nome da campanha"    value={editing.name}        onChange={(v: string) => setEditing(p => ({ ...p, name: v }))} />
-              <F label="Palavra-chave gatilho (opcional)" value={editing.triggerKeyword} onChange={(v: string) => setEditing(p => ({ ...p, triggerKeyword: v }))} />
-              <F label="Nome da persona (IA)" value={editing.personaName} onChange={(v: string) => setEditing(p => ({ ...p, personaName: v }))} />
-              <F label="Nome do produto"     value={editing.productName}  onChange={(v: string) => setEditing(p => ({ ...p, productName: v }))} />
-              <F label="Preço (R$)"          value={editing.productPrice} onChange={(v: string) => setEditing(p => ({ ...p, productPrice: parseFloat(v) }))} type="number" />
-              <F label="Link de pagamento"   value={editing.paymentUrl}   onChange={(v: string) => setEditing(p => ({ ...p, paymentUrl: v }))} />
+              <F label="Nome da campanha"                  value={(editing as any).name}            onChange={(v: string) => setEditing(p => ({ ...p, name: v }))} />
+              <F label="Palavra-chave gatilho (opcional)"  value={(editing as any).triggerKeyword}  onChange={(v: string) => setEditing(p => ({ ...p, triggerKeyword: v }))} />
+              <F label="Nome da persona (IA)"              value={(editing as any).personaName}     onChange={(v: string) => setEditing(p => ({ ...p, personaName: v }))} />
+              <F label="Tom de voz da persona"             value={(editing as any).personaTone}     onChange={(v: string) => setEditing(p => ({ ...p, personaTone: v }))} />
+              <F label="Nome do produto"                   value={(editing as any).productName}     onChange={(v: string) => setEditing(p => ({ ...p, productName: v }))} />
+              <F label="Preço (R$)"                        value={(editing as any).productPrice}    onChange={(v: string) => setEditing(p => ({ ...p, productPrice: parseFloat(v) }))} type="number" />
+              <div className="col-span-2">
+                <F label="Link de pagamento"               value={(editing as any).paymentUrl}      onChange={(v: string) => setEditing(p => ({ ...p, paymentUrl: v }))} />
+              </div>
             </div>
 
             <F label="Descrição do produto" value={(editing as any).productDescription}

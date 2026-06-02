@@ -18,8 +18,10 @@ public static class CampaignEndpoints
                 .Select(c => new
                 {
                     c.Id, c.Name, c.Active, c.IsDefault,
-                    c.PersonaName, c.ProductName, c.ProductPrice,
-                    c.TriggerKeyword, c.PaymentUrl,
+                    c.PersonaName, c.PersonaTone, c.ProductName,
+                    c.ProductDescription, c.ProductBenefits,
+                    c.ProductPrice, c.TriggerKeyword, c.PaymentUrl,
+                    c.ObjectionHandlers, c.ClosingMessage,
                     c.TotalLeads, c.TotalSales, c.TotalRevenue,
                 })
                 .ToListAsync();

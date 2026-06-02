@@ -11,15 +11,18 @@ public static class WebhookEndpoints
     public static void MapWebhookEndpoints(this IEndpointRouteBuilder app)
     {
         // ── INSTAGRAM ─────────────────────────────────────────
-        app.MapGet("/webhooks/instagram", (
-            string? hub_mode,
-            string? hub_verify_token,
-            string? hub_challenge,
-            IConfiguration cfg) =>
+        // Meta envia hub.mode, hub.verify_token, hub.challenge (com ponto)
+        // .NET não faz bind automático de "hub.mode" → "hub_mode", então lemos da query diretamente
+        app.MapGet("/webhooks/instagram", (HttpRequest request, IConfiguration cfg) =>
         {
-            var expected = cfg["Meta:InstagramVerifyToken"];
-            if (hub_mode == "subscribe" && hub_verify_token == expected && hub_challenge is not null)
-                return Results.Ok(int.Parse(hub_challenge));
+            var mode      = request.Query["hub.mode"].ToString();
+            var token     = request.Query["hub.verify_token"].ToString();
+            var challenge = request.Query["hub.challenge"].ToString();
+            var expected  = cfg["Meta:InstagramVerifyToken"];
+
+            if (mode == "subscribe" && token == expected && !string.IsNullOrEmpty(challenge))
+                return Results.Content(challenge, "text/plain");
+
             return Results.Forbid();
         }).WithName("InstagramVerify");
 
@@ -41,15 +44,16 @@ public static class WebhookEndpoints
         }).WithName("InstagramWebhook");
 
         // ── WHATSAPP ──────────────────────────────────────────
-        app.MapGet("/webhooks/whatsapp", (
-            string? hub_mode,
-            string? hub_verify_token,
-            string? hub_challenge,
-            IConfiguration cfg) =>
+        app.MapGet("/webhooks/whatsapp", (HttpRequest request, IConfiguration cfg) =>
         {
-            var expected = cfg["Meta:WhatsAppVerifyToken"];
-            if (hub_mode == "subscribe" && hub_verify_token == expected && hub_challenge is not null)
-                return Results.Ok(int.Parse(hub_challenge));
+            var mode      = request.Query["hub.mode"].ToString();
+            var token     = request.Query["hub.verify_token"].ToString();
+            var challenge = request.Query["hub.challenge"].ToString();
+            var expected  = cfg["Meta:WhatsAppVerifyToken"];
+
+            if (mode == "subscribe" && token == expected && !string.IsNullOrEmpty(challenge))
+                return Results.Content(challenge, "text/plain");
+
             return Results.Forbid();
         }).WithName("WhatsAppVerify");
 
