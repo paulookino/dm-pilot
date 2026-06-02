@@ -9,7 +9,7 @@ function LoginForm() {
   const searchParams = useSearchParams()
   const planParam    = searchParams.get('plan')
 
-  const [tab,   setTab]     = useState<'login' | 'register'>('login')
+  const [tab,   setTab]     = useState<'login' | 'register'>(planParam ? 'register' : 'login')
   const [name,  setName]    = useState('')
   const [email, setEmail]   = useState('')
   const [pass,  setPass]    = useState('')

@@ -44,7 +44,7 @@ export default function PricingPage() {
     setLoading(planId); setError('')
     try {
       const token = localStorage.getItem('token')
-      if (!token) { router.push(`/signup?plan=${planId}`); return }
+      if (!token) { router.push(`/login?plan=${planId}`); return }
 
       const res = await api.post('/billing/checkout', { plan: planId })
       if (res.data.url) window.location.href = res.data.url
