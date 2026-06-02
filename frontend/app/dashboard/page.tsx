@@ -7,6 +7,7 @@ import {
   Flame, ExternalLink, Copy, ChevronDown, ChevronUp
 } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface Profile {
   instagramConnected: boolean; whatsappConnected: boolean
@@ -53,8 +54,32 @@ export default function DashboardPage() {
   const igWebhookUrl   = `${baseUrl}/webhooks/instagram`
   const waWebhookUrl   = `${baseUrl}/webhooks/whatsapp`
 
+  const isFree      = profile?.plan === 'Free'
+  const quotaUsed   = profile?.quota?.used ?? 0
+  const quotaLimit  = profile?.quota?.limit ?? 50
+  const quotaPct    = Math.min(100, Math.round((quotaUsed / quotaLimit) * 100))
+  const quotaCritical = quotaPct >= 80
+
   return (
     <div className="p-6 space-y-5 max-w-4xl">
+
+      {/* Banner upgrade (Free) */}
+      {isFree && (
+        <div className="flex items-center justify-between px-5 py-4 rounded-2xl"
+          style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.18), rgba(99,102,241,0.1))', border: '1px solid rgba(124,58,237,0.3)' }}>
+          <div>
+            <p className="text-sm font-bold text-white">Plano grátis — {quotaUsed}/{quotaLimit} mensagens usadas</p>
+            <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
+              {quotaCritical ? '⚠️ Você está quase no limite. Faça upgrade para não perder vendas.' : 'Assine o Starter para 500 msgs/mês e Instagram conectado.'}
+            </p>
+          </div>
+          <Link href="/pricing"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold text-white whitespace-nowrap hover:opacity-90 transition-opacity ml-4"
+            style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)', boxShadow: '0 0 20px rgba(124,58,237,0.3)' }}>
+            <Zap className="w-4 h-4" /> Fazer upgrade
+          </Link>
+        </div>
+      )}
 
       {/* Cabeçalho */}
       <div className="flex items-start justify-between">

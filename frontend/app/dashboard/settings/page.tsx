@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { authApi, api } from '@/lib/api'
-import { Camera, MessageCircle, Key, Save, CheckCircle2, Loader2, ExternalLink } from 'lucide-react'
+import { Camera, MessageCircle, Key, Save, CheckCircle2, Loader2, ExternalLink, Zap, ArrowRight, CreditCard } from 'lucide-react'
+import Link from 'next/link'
 
 interface Profile {
   id: string; name: string; email: string; plan: string
@@ -16,6 +17,15 @@ export default function SettingsPage() {
   const [profile, setProfile]   = useState<Profile | null>(null)
   const [saving,  setSaving]    = useState<string | null>(null)
   const [saved,   setSaved]     = useState<string | null>(null)
+  const [portalLoading, setPortalLoading] = useState(false)
+
+  async function openBillingPortal() {
+    setPortalLoading(true)
+    try {
+      const res = await api.post('/billing/portal')
+      if (res.data.url) window.location.href = res.data.url
+    } catch { /* Stripe não configurado */ } finally { setPortalLoading(false) }
+  }
 
   // Instagram
   const [igPageId,  setIgPageId]  = useState('')
@@ -99,6 +109,30 @@ export default function SettingsPage() {
             <p className="text-xs font-semibold mb-1" style={{ color: '#64748b' }}>Uso do mês</p>
             <p className="text-sm text-white">{profile.quota?.used ?? 0} / {profile.quota?.limit ?? 0} msgs</p>
           </div>
+
+          {profile.plan === 'Free' ? (
+            <div className="col-span-2 mt-2 p-4 rounded-xl flex items-center justify-between"
+              style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(99,102,241,0.1))', border: '1px solid rgba(124,58,237,0.3)' }}>
+              <div>
+                <p className="text-sm font-semibold text-white">Você está no plano grátis</p>
+                <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>50 msgs/mês · Assine para escalar suas vendas</p>
+              </div>
+              <Link href="/pricing"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white whitespace-nowrap"
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)' }}>
+                <Zap className="w-3.5 h-3.5" /> Fazer upgrade
+              </Link>
+            </div>
+          ) : (
+            <div className="col-span-2 mt-2">
+              <button onClick={openBillingPortal} disabled={portalLoading}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white disabled:opacity-50 hover:opacity-80 transition-opacity"
+                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <CreditCard className="w-3.5 h-3.5" />
+                {portalLoading ? 'Abrindo...' : 'Gerenciar assinatura'}
+              </button>
+            </div>
+          )}
         </div>
       </Card>
 

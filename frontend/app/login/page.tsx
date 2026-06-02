@@ -1,11 +1,14 @@
 'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { authApi } from '@/lib/api'
 import { Zap } from 'lucide-react'
 
-export default function LoginPage() {
-  const router = useRouter()
+function LoginForm() {
+  const router       = useRouter()
+  const searchParams = useSearchParams()
+  const planParam    = searchParams.get('plan')
+
   const [tab,   setTab]     = useState<'login' | 'register'>('login')
   const [name,  setName]    = useState('')
   const [email, setEmail]   = useState('')
@@ -20,7 +23,8 @@ export default function LoginPage() {
         ? await authApi.login(email, pass)
         : await authApi.register(name, email, pass)
       localStorage.setItem('token', res.data.token)
-      router.push('/dashboard')
+      if (tab === 'register' && planParam) router.push(`/pricing?plan=${planParam}`)
+      else router.push('/dashboard')
     } catch (e: any) {
       setErr(e.response?.data?.error ?? 'Erro. Verifique os dados.')
     } finally { setLoad(false) }
@@ -29,7 +33,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: '#0f0f1a' }}>
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)' }}>
@@ -38,11 +41,14 @@ export default function LoginPage() {
             <span className="text-2xl font-bold text-white">DM Pilot</span>
           </div>
           <p className="text-gray-400 text-sm">Automação de vendas via Instagram e WhatsApp</p>
+          {planParam && (
+            <p className="text-xs mt-2 px-3 py-1 rounded-full inline-block" style={{ background: 'rgba(124,58,237,0.15)', color: '#a78bfa' }}>
+              Crie sua conta e assine o plano {planParam}
+            </p>
+          )}
         </div>
 
-        {/* Card */}
         <div className="rounded-2xl p-8" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          {/* Tabs */}
           <div className="flex gap-1 mb-6 p-1 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
             {(['login', 'register'] as const).map(t => (
               <button key={t} onClick={() => setTab(t)}
@@ -80,5 +86,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center" style={{ background: '#0f0f1a' }} />}>
+      <LoginForm />
+    </Suspense>
   )
 }
