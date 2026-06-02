@@ -66,8 +66,7 @@ public static class BillingEndpoints
                 CancelUrl          = $"{appUrl}/pricing?canceled=true",
                 SubscriptionData   = new SessionSubscriptionDataOptions
                 {
-                    TrialPeriodDays = 7,
-                    Metadata        = new Dictionary<string, string> { ["tenant_id"] = tenant.Id.ToString() }
+                    Metadata = new Dictionary<string, string> { ["tenant_id"] = tenant.Id.ToString() }
                 },
                 Locale = "pt-BR",
             });

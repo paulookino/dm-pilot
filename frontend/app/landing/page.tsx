@@ -41,7 +41,7 @@ export default function LandingPage() {
       <section className="max-w-4xl mx-auto px-8 pt-20 pb-16 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
           style={{ background: 'rgba(124,58,237,0.15)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.25)' }}>
-          <Star className="w-3.5 h-3.5" /> 7 dias grátis · sem cartão
+          <Star className="w-3.5 h-3.5" /> Acesso imediato · Cancele quando quiser
         </div>
 
         <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-6">
@@ -59,7 +59,7 @@ export default function LandingPage() {
           <Link href="/pricing"
             className="flex items-center gap-2.5 px-8 py-4 rounded-2xl text-white font-bold text-lg transition-all hover:opacity-90"
             style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)', boxShadow: '0 0 40px rgba(124,58,237,0.4)' }}>
-            Começar 7 dias grátis <ArrowRight className="w-5 h-5" />
+            Começar agora <ArrowRight className="w-5 h-5" />
           </Link>
           <Link href="/login" className="flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-lg transition-all hover:bg-white/5"
             style={{ border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)' }}>
@@ -148,7 +148,7 @@ export default function LandingPage() {
       {/* CTA final */}
       <section className="max-w-2xl mx-auto px-8 py-20 text-center">
         <h2 className="text-4xl font-bold text-white mb-4">Pronto para automatizar suas vendas?</h2>
-        <p className="mb-8 text-lg" style={{ color: '#64748b' }}>7 dias grátis. Sem cartão. Cancele quando quiser.</p>
+        <p className="mb-8 text-lg" style={{ color: '#64748b' }}>Acesso imediato. Cancele quando quiser.</p>
         <Link href="/pricing"
           className="inline-flex items-center gap-2.5 px-10 py-5 rounded-2xl text-white font-bold text-xl transition-all hover:opacity-90"
           style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)', boxShadow: '0 0 60px rgba(124,58,237,0.35)' }}>

@@ -71,7 +71,7 @@ export default function PricingPage() {
       <div className="max-w-5xl mx-auto px-8 py-16">
         <div className="text-center mb-14">
           <h1 className="text-4xl font-bold text-white mb-3">Planos simples, sem surpresas</h1>
-          <p style={{ color: '#64748b' }}>7 dias grátis em qualquer plano. Cancele quando quiser.</p>
+          <p style={{ color: '#64748b' }}>Acesso imediato. Cancele quando quiser.</p>
         </div>
 
         {error && (
@@ -119,7 +119,7 @@ export default function PricingPage() {
               <button onClick={() => handleCheckout(plan.id)} disabled={loading === plan.id}
                 className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
                 style={{ background: plan.popular ? 'linear-gradient(135deg, #7c3aed, #6366f1)' : 'rgba(255,255,255,0.08)' }}>
-                {loading === plan.id ? 'Redirecionando...' : <><ArrowRight className="w-4 h-4" /> Começar 7 dias grátis</>}
+                {loading === plan.id ? 'Redirecionando...' : <><ArrowRight className="w-4 h-4" /> Assinar agora</>}
               </button>
             </div>
           ))}
@@ -129,7 +129,7 @@ export default function PricingPage() {
         <div className="text-center mt-12">
           <div className="inline-flex items-center gap-2 text-sm" style={{ color: '#64748b' }}>
             <Shield className="w-4 h-4" />
-            Garantia de 7 dias. Se não gostar, devolvemos. Sem pergunta.
+            Garantia de 7 dias após a compra. Se não gostar, devolvemos. Sem pergunta.
           </div>
         </div>
 
@@ -138,7 +138,7 @@ export default function PricingPage() {
           <h3 className="text-xl font-bold text-white mb-6 text-center">Perguntas frequentes</h3>
           <div className="space-y-4">
             {[
-              { q: 'Preciso de cartão para o trial?', a: 'Sim, mas não cobramos nada nos primeiros 7 dias. Cancele antes e não paga nada.' },
+              { q: 'Tem garantia?', a: 'Sim. 7 dias após a compra — se não gostar, devolvemos 100% sem perguntas.' },
               { q: 'O que acontece quando acabo as mensagens?', a: 'Você recebe um aviso e pode fazer upgrade. Não cortamos no meio de uma venda.' },
               { q: 'Funciona com qualquer conta do Instagram?', a: 'Precisa ser uma conta comercial ou criador de conteúdo com acesso à API da Meta.' },
               { q: 'Posso mudar de plano depois?', a: 'Sim, a qualquer momento. O upgrade é imediato, o downgrade vale no próximo ciclo.' },
